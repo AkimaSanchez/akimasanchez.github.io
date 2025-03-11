@@ -91,8 +91,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>NumPy 1.21.5</li>
 <li>pandas 1.4.4</li>
 </ul>
-<h4>NumPy模块</h4>
-<p>numpy模块功能非常强大，支持大量的多维数组与矩阵计算，也针对数组运算提供大量的数学函数库，同时支持广播功能函数，线性代数运算，傅里叶变换等功能。这里我仅给出常用的一些函数使用示例。</p>
+<h3>NumPy模块</h3>
+<p>  numpy模块功能非常强大，支持大量的多维数组与矩阵计算，也针对数组运算提供大量的数学函数库，同时支持广播功能函数，线性代数运算，傅里叶变换等功能。这里仅给出常用的一些函数使用示例，同时约定俗成，将NumPy简称为np。</p>
 <ol>
 <li>生成NumPy数组</li>
 </ol>
@@ -131,16 +131,22 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-s1">arr0</span><span class="pl-c1">=</span><span class="pl-s1">np</span>.<span class="pl-c1">array</span>([<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>])
 <span class="pl-s1">arr1</span><span class="pl-c1">=</span><span class="pl-s1">np</span>.<span class="pl-c1">array</span>([<span class="pl-c1">2</span>,<span class="pl-c1">3</span>,<span class="pl-c1">4</span>])
 <span class="pl-s1">arr0</span><span class="pl-c1">+</span><span class="pl-s1">arr1</span></pre></div>
-<p>输出：array([3,5,7])</p>
+<blockquote>
+<p>array([3,5,7])</p>
+</blockquote>
 <div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-s1">arr0</span><span class="pl-c1">*</span><span class="pl-s1">arr1</span></pre></div>
-<p>输出：array([2,6,12])</p>
+<blockquote>
+<p>array([2,6,12])</p>
+</blockquote>
 <ul>
 <li>对于维数不同的数组（类似于矩阵相乘，前一个矩阵列数等于后一个矩阵行数）</li>
 </ul>
 <div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-s1">arr2</span><span class="pl-c1">=</span><span class="pl-s1">np</span>.<span class="pl-c1">random</span>.<span class="pl-c1">randint</span>(<span class="pl-c1">1</span>,<span class="pl-c1">10</span>,(<span class="pl-c1">2</span>,<span class="pl-c1">3</span>))
 <span class="pl-s1">arr3</span><span class="pl-c1">=</span><span class="pl-s1">np</span>.<span class="pl-c1">random</span>.<span class="pl-c1">randint</span>(<span class="pl-c1">1</span>,<span class="pl-c1">10</span>,(<span class="pl-c1">3</span>,<span class="pl-c1">2</span>))
 <span class="pl-s1">np</span>.<span class="pl-c1">dot</span>(<span class="pl-s1">arr2</span>,<span class="pl-s1">arr3</span>)</pre></div>
-<p>输出：array([[86,100],[140,128]])</p>
+<blockquote>
+<p>array([[86,100],[140,128]])</p>
+</blockquote>
 <ol start="3">
 <li>Numpy数组统计方法</li>
 </ol>
@@ -158,7 +164,121 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <span class="pl-s1">np</span>.<span class="pl-c1">amin</span>(<span class="pl-s1">arr4</span>,<span class="pl-c1">1</span>)
 
 <span class="pl-c">#求解数组的中位数</span>
-<span class="pl-s1">np</span>.<span class="pl-c1">median</span>(<span class="pl-s1">arr4</span>)</pre></div></div>
+<span class="pl-s1">np</span>.<span class="pl-c1">median</span>(<span class="pl-s1">arr4</span>)</pre></div>
+<h3>pandas模块</h3>
+<p>  pandas是基于NumPy构建的数据分析库，但它比NumPy有更高级的数据结构和分析工具，如Series类型、DataFrame类型等。在此约定俗成，将pandas简称为pd。</p>
+<ol>
+<li>pandas数据结构之Series</li>
+</ol>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-s1">pd</span>.<span class="pl-c1">Series</span>(<span class="pl-s1">data</span><span class="pl-c1">=</span>[<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>,<span class="pl-c1">4</span>])</pre></div>
+<blockquote>
+<p>0  1<br>
+1  2<br>
+2  3<br>
+3  4<br>
+dtype: int64</p>
+</blockquote>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-s1">pd</span>.<span class="pl-c1">Series</span>(<span class="pl-s1">data</span><span class="pl-c1">=</span>[<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>,<span class="pl-c1">4</span>], <span class="pl-s1">index</span><span class="pl-c1">=</span>[<span class="pl-s">'a'</span>, <span class="pl-s">'b'</span>, <span class="pl-s">'c'</span>, <span class="pl-s">'d'</span>])</pre></div>
+<blockquote>
+<p>a  1<br>
+b  2<br>
+c  3<br>
+d  4<br>
+dtype: int64</p>
+</blockquote>
+<p>  如上面的例子所示，创建Series时，语句中的data为数据源，index为索引。当index没有指定时，默认为从0开始的标签。上面输出的dtype是data的数据类型。<br>
+  当Series数组元素为数值时，我们可以使用Series对象的describe方法对Series数组的数值进行分析，演示如下所示，具体的输出可以自己敲一遍看看效果。</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-s1">data</span><span class="pl-c1">=</span><span class="pl-s1">np</span>.<span class="pl-c1">random</span>.<span class="pl-c1">randint</span>(<span class="pl-c1">1</span>,<span class="pl-c1">100</span>,<span class="pl-c1">10</span>)
+<span class="pl-s1">s</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">Series</span>(<span class="pl-s1">data</span><span class="pl-c1">=</span><span class="pl-s1">data</span>)
+<span class="pl-s1">s</span>.<span class="pl-c1">describe</span>()</pre></div>
+<p>  对于一个Series数据类型的对象，可以使用append方法实现数组元素的追加，也可以理解为两个Series对象的合并。</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-s1">s1</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">Series</span>([<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>], <span class="pl-s1">index</span><span class="pl-c1">=</span>[<span class="pl-s">'a'</span>, <span class="pl-s">'b'</span>, <span class="pl-s">'c'</span>])
+<span class="pl-s1">s2</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">Series</span>([<span class="pl-c1">4</span>,<span class="pl-c1">5</span>,<span class="pl-c1">6</span>], <span class="pl-s1">index</span><span class="pl-c1">=</span>[<span class="pl-s">'d'</span>, <span class="pl-s">'e'</span>, <span class="pl-s">'f'</span>])
+<span class="pl-s1">s</span><span class="pl-c1">=</span><span class="pl-s1">s1</span>.<span class="pl-c1">append</span>(<span class="pl-s1">s2</span>)
+<span class="pl-s1">s</span></pre></div>
+<blockquote>
+<p>a  1<br>
+b  2<br>
+c  3<br>
+d  4<br>
+e  5<br>
+f   6<br>
+dtype:  int64</p>
+</blockquote>
+<p>  而drop方法可以对Series数据类型的序列元素进行删除。</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-s1">s</span>.<span class="pl-c1">drop</span>(<span class="pl-s1">index</span><span class="pl-c1">=</span><span class="pl-s">'a'</span>, <span class="pl-s1">inplace</span><span class="pl-c1">=</span><span class="pl-c1">True</span>)
+<span class="pl-s1">s</span></pre></div>
+<p>  drop方法的inplace值默认为Flase，设置为True时本地删除。</p>
+<ol start="2">
+<li>pandas数据结构之DataFrame</li>
+</ol>
+<p>  我们可以将Series视作Excel表中的一列，那么DataFrame就是Excel中的一张工作表。DataFrame的创建语句如下：</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-s1">pd</span>.<span class="pl-c1">DataFrame</span>(<span class="pl-s1">data</span>, <span class="pl-s1">index</span>, <span class="pl-s1">columns</span>)</pre></div>
+<p>  其中data为数据源，index为行索引，columns为列索引。data为数组元素，可以由一系列数据构成，大多数情况下由多列数据构成，同时每一列的数据类型<strong>必须</strong>相同。当index和columns不指定时，从0开始。通常来说，列索引最好给定，因为这样每一列数据的属性可以由列索引描述。读者可以尝试以下代码体会一下：</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-s1">data</span><span class="pl-c1">=</span><span class="pl-s1">np</span>.<span class="pl-c1">random</span>.<span class="pl-c1">randint</span>(<span class="pl-c1">1</span>, <span class="pl-c1">100</span>, (<span class="pl-c1">3</span>, <span class="pl-c1">4</span>))
+<span class="pl-s1">df</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">DataFrame</span>(<span class="pl-s1">data</span>, <span class="pl-s1">columns</span><span class="pl-c1">=</span>[<span class="pl-s">'a'</span>, <span class="pl-s">'b'</span>, <span class="pl-s">'c'</span>, <span class="pl-s">'d'</span>])
+<span class="pl-s1">df</span></pre></div>
+<p>  调用DataFrame对象中的info方法可以获得表的信息概述，包括行索引、列索引、非空数据个数和数据类型信息。</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c">#返回概述</span>
+<span class="pl-s1">df</span>.<span class="pl-c1">info</span>()
+
+<span class="pl-c">#返回行索引</span>
+<span class="pl-s1">df</span>.<span class="pl-c1">index</span>
+
+<span class="pl-c">#返回列索引</span>
+<span class="pl-s1">df</span>.<span class="pl-c1">columns</span>
+
+<span class="pl-c">#返回值</span>
+<span class="pl-s1">df</span>.<span class="pl-c1">values</span></pre></div>
+<p>  DataFrame中访问数据的方法</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c">#查看原始的df数据</span>
+<span class="pl-s1">df</span>
+
+<span class="pl-c">#访问df的第1-2行数据，返回DataFrame数据对象</span>
+<span class="pl-s1">df</span>[<span class="pl-c1">0</span>:<span class="pl-c1">2</span>]  
+
+<span class="pl-c">#访问df列为a的数据，返回DataFrame数据对象</span>
+<span class="pl-s1">df</span>.<span class="pl-c1">a</span>  
+
+<span class="pl-c">#访问df的第2行，列名为a的数据，返回数据</span>
+<span class="pl-s1">df</span>.<span class="pl-c1">at</span>[<span class="pl-c1">1</span>, <span class="pl-s">'a'</span>]  
+
+<span class="pl-c">#访问df的第2-3行，第2-3列包围的数据，返回数据</span>
+<span class="pl-s1">df</span>.<span class="pl-c1">iloc</span>[<span class="pl-c1">1</span>:<span class="pl-c1">3</span>, <span class="pl-c1">1</span>:<span class="pl-c1">3</span>]  </pre></div>
+<p>对DataFrame数据进行基本操作的方法</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c">#添加列，索引为e，将列的值设置为2</span>
+<span class="pl-s1">df</span>[<span class="pl-s">'e'</span>]<span class="pl-c1">=</span><span class="pl-c1">2</span>
+
+<span class="pl-c">#添加列，索引为3，将列的值设置为3</span>
+<span class="pl-s1">df</span>.<span class="pl-c1">loc</span>[<span class="pl-c1">3</span>]<span class="pl-c1">=</span><span class="pl-c1">3</span>
+
+<span class="pl-c">#将df索引为2的行和索引为c的列的数值修改为4</span>
+<span class="pl-s1">df</span>.<span class="pl-c1">at</span>[<span class="pl-c1">2</span>, <span class="pl-s">'c'</span>]<span class="pl-c1">=</span><span class="pl-c1">4</span>
+
+<span class="pl-c">#删除df数据中行索引为3的数据，axis为0时是行，1时为列</span>
+<span class="pl-s1">df</span>.<span class="pl-c1">drop</span>(<span class="pl-c1">3</span>, <span class="pl-s1">axis</span><span class="pl-c1">=</span><span class="pl-c1">0</span>, <span class="pl-s1">inplace</span><span class="pl-c1">=</span><span class="pl-c1">True</span>)</pre></div>
+<p>DataFrame中数据分析常用的方法如下表所示：<br>
+<a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/3340befdb5e7cf2e2d56e884b7c6271e8cbbd2ca4daa301aa28c44755aca2081/68747470733a2f2f692e706f7374696d672e63632f3464737347346d442f326237343239303561396664623963363836616164373630353437363866302e6a7067"><img src="https://camo.githubusercontent.com/3340befdb5e7cf2e2d56e884b7c6271e8cbbd2ca4daa301aa28c44755aca2081/68747470733a2f2f692e706f7374696d672e63632f3464737347346d442f326237343239303561396664623963363836616164373630353437363866302e6a7067" alt="DataFrame中数据分析常用方法表" data-canonical-src="https://i.postimg.cc/4dssG4mD/2b742905a9fdb9c686aad76054768f0.jpg" style="max-width: 100%;"></a></p>
+<h3>Matplotlib/Seaborn模块</h3>
+<p>  在数据分析的流程中，结果的呈现是非常重要的步骤，美观规范的图表会让客户直观快速地了解数据变化的趋势，找到有关数据变化的原因。这个绘图库后面会讲到，这里就不再赘述。</p>
+<h3>其他模块</h3>
+<ol>
+<li>
+<p>SciPy模块<br>
+  基于NumPy的计算模块包，该模块可以处理插值、积分、优化、图像处理、常微分方程数值解的求解、信号处理等问题，主要与NumPy矩阵共同使用，广泛应用与数据科学、人工智能、数学、机械制造和生物工程等领域。</p>
+</li>
+<li>
+<p>Stasmodels模块<br>
+  重要的统计建模和计量经济学工具库，该模块用于估计许多不同统计模型以及进行统计测试和统计数据探索的类和函数。常用的模型包括线性模型、广义线性模型和鲁棒线性模型、线性混合效应模型、方差分析（ANOVA）方法、时间序列过程和状态空间模型、广义的矩量法等，具体可以直接访问官网[stasmodels-link]:www.statsmodels.org。</p>
+</li>
+<li>
+<p>Scikit-Learn模块<br>
+  重要的机器学习库，也称为sklearn，是针对Python编程语言的<strong>免费</strong>机器学习库。它具有各种分类，回归和聚类算法，包括支持向量机，随机森林，梯度提升，k均值和DBSCAN（集群分析算法），旨在与Python数值科学库NumPy和SciPy联合使用。</p>
+</li>
+</ol>
+<h3>结语</h3>
+<p>  这一章我们主要稍微学习了一下Python数据分析中常见的各种库的使用方法，特别是NumPy和pandas库建议读者一定要去动手敲一下看一下效果，加深印象，同时加深对这两个库的理解，也可以去网上找一些项目去实践一下，巩固学习成果。<br>
+  好，第一章就这样结束了，愿您学习愉快，同时有不足的地方尽情指出。</p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
