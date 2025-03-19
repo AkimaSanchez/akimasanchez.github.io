@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>AS的博客</title><link>https://akimasanchez.github.io</link><description>一个专注于分享个人技术学习与生活经验的博客 Power By Gmeek</description><copyright>AS的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/121594543?v=4</url><title>avatar</title><link>https://akimasanchez.github.io</link></image><lastBuildDate>Wed, 19 Mar 2025 16:09:08 +0000</lastBuildDate><managingEditor>AS的博客</managingEditor><ttl>60</ttl><webMaster>AS的博客</webMaster><item><title>如何解决ubuntu中使用matplotlib库时无法显示中文的问题（font.family not found)</title><link>https://akimasanchez.github.io/post/ru-he-jie-jue-ubuntu-zhong-shi-yong-matplotlib-ku-shi-wu-fa-xian-shi-zhong-wen-de-wen-ti-%EF%BC%88font.family%20not%20found%29.html</link><description>1. 下载一个可以显示中文的字体:
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>AS的博客</title><link>https://akimasanchez.github.io</link><description>一个专注于分享个人技术学习与生活经验的博客 Power By Gmeek</description><copyright>AS的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/121594543?v=4</url><title>avatar</title><link>https://akimasanchez.github.io</link></image><lastBuildDate>Wed, 19 Mar 2025 16:26:46 +0000</lastBuildDate><managingEditor>AS的博客</managingEditor><ttl>60</ttl><webMaster>AS的博客</webMaster><item><title>如何解决ubuntu中使用matplotlib库时无法显示中文的问题（font.family not found)</title><link>https://akimasanchez.github.io/post/ru-he-jie-jue-ubuntu-zhong-shi-yong-matplotlib-ku-shi-wu-fa-xian-shi-zhong-wen-de-wen-ti-%EF%BC%88font.family%20not%20found%29.html</link><description>1. 下载一个可以显示中文的字体:
 ```linux
 sudo apt-get install ttf-wqy-zenhei
 ```
@@ -34,7 +34,42 @@ import matplotlib.pyplot as plt
 ```python
 plt.rcParams['font.family'] = 'WenQuanYi Zen Hei'
 plt.rcParams['axes.unicode_minus'] = False
-```。</description><guid isPermaLink="true">https://akimasanchez.github.io/post/ru-he-jie-jue-ubuntu-zhong-shi-yong-matplotlib-ku-shi-wu-fa-xian-shi-zhong-wen-de-wen-ti-%EF%BC%88font.family%20not%20found%29.html</guid><pubDate>Wed, 19 Mar 2025 15:55:08 +0000</pubDate></item><item><title>git常用命令（个人使用总结）</title><link>https://akimasanchez.github.io/post/git-chang-yong-ming-ling-%EF%BC%88-ge-ren-shi-yong-zong-jie-%EF%BC%89.html</link><description>### git是什么？
+```。</description><guid isPermaLink="true">https://akimasanchez.github.io/post/ru-he-jie-jue-ubuntu-zhong-shi-yong-matplotlib-ku-shi-wu-fa-xian-shi-zhong-wen-de-wen-ti-%EF%BC%88font.family%20not%20found%29.html</guid><pubDate>Wed, 19 Mar 2025 15:55:08 +0000</pubDate></item><item><title>ubuntu如何使用图形化软件</title><link>https://akimasanchez.github.io/post/ubuntu-ru-he-shi-yong-tu-xing-hua-ruan-jian.html</link><description>去网络上下载带有.deb后缀的文件
+使用ubuntu自带的GDebi软件安装程序进行安装即可。</description><guid isPermaLink="true">https://akimasanchez.github.io/post/ubuntu-ru-he-shi-yong-tu-xing-hua-ruan-jian.html</guid><pubDate>Wed, 19 Mar 2025 15:53:13 +0000</pubDate></item><item><title>ubuntu如何配置环境变量</title><link>https://akimasanchez.github.io/post/ubuntu-ru-he-pei-zhi-huan-jing-bian-liang.html</link><description>1. 首先去官网下载jdk
+在终端使用命令进行解压:
+```linux
+tar -zxf /home/wiki/Download/jdk-8u77-linux-x64.tar.gz
+```
+可以将其移动到安装目录：
+```linux
+mv jdk1.8.0.7 /home/wiki/develop
+mv jdk1.8.0.7 jdk #改名
+```
+
+2. 设置环境变量
+编辑文件：
+```linux
+vim /home/wiki/.bashrc
+```
+按i进入编辑模式，在头文件中添加环境变量：
+```linux
+export JAVA_HOME=/home/wiki/develop/jdk
+```
+如果想添加jre，则：
+```linux
+export JRE_HOME=${JAVA_HOME}/JRE
+```
+将jdk的bin目录添加到path环境变量中：
+```linux
+export PATH=${JAVA_HOME}/bin:$PATH
+```
+
+3. 使设置生效
+按esc推出编辑模式，然后再ctrl+c推出编辑文件模式
+对.bashrc文件运行source命令，使得设置立即生效：
+```linux
+source /home/wiki/.bashrc
+```。</description><guid isPermaLink="true">https://akimasanchez.github.io/post/ubuntu-ru-he-pei-zhi-huan-jing-bian-liang.html</guid><pubDate>Wed, 19 Mar 2025 15:51:49 +0000</pubDate></item><item><title>git常用命令（个人使用总结）</title><link>https://akimasanchez.github.io/post/git-chang-yong-ming-ling-%EF%BC%88-ge-ren-shi-yong-zong-jie-%EF%BC%89.html</link><description>### git是什么？
 &amp;emsp;&amp;emsp;Git是目前最流行的版本控制系统之一，被广泛应用于各种软件开发项目中，包括开源项目和商业项目。</description><guid isPermaLink="true">https://akimasanchez.github.io/post/git-chang-yong-ming-ling-%EF%BC%88-ge-ren-shi-yong-zong-jie-%EF%BC%89.html</guid><pubDate>Tue, 18 Mar 2025 15:23:35 +0000</pubDate></item><item><title>第一章 Python数据分析概述</title><link>https://akimasanchez.github.io/post/di-yi-zhang-%20Python-shu-ju-fen-xi-gai-shu.html</link><description>#### 写在前面：由于每个人的系统和环境不同，本人就不在此赘述Python的开发环境，请自行配置好Python开发环境，同时Python语言真的很简单，考教资的时候才发现现在小学生已经学上了，我那时候还在学Scratch，时代变了（悲），也就是说小学生都能学会的东西大部分人都能自学，相信你自己。</description><guid isPermaLink="true">https://akimasanchez.github.io/post/di-yi-zhang-%20Python-shu-ju-fen-xi-gai-shu.html</guid><pubDate>Mon, 10 Mar 2025 15:02:07 +0000</pubDate></item><item><title>表（较新考点）</title><link>https://akimasanchez.github.io/post/biao-%EF%BC%88-jiao-xin-kao-dian-%EF%BC%89.html</link><description>## 评价指标
 ### 作品类
 ![作品类.jpg](https://i.postimg.cc/ZR1HBvYp/image.jpg)
