@@ -176,6 +176,7 @@ docker save &lt;customize_name&gt;:&lt;customize_label&gt;
 #生成镜像
 docker load -o customize_name.tar &lt;customize_name&gt;:&lt;customize_label&gt;
 </code></pre>
+<h3>保存容器</h3>
 <pre lang="linux" class="notranslate"><code class="notranslate">#登录到您的docker账号
 docker login
 #为您修改的镜像命名与添加标签，标签最好为lastest，因为下载时默认是lastest，这样不用指定版本号
@@ -183,8 +184,62 @@ docker tag source_name:source_label customize_name:customize_label
 #推送您的镜像到dockerhub
 docker push
 </code></pre>
-<h3>保存容器</h3>
-<p>使用docker时遇到的问题：</p>
+<h3>docker存储</h3>
+<pre lang="linux" class="notranslate"><code class="notranslate">#批量删除容器，其中"$"是指将括号中命令的结果传递
+#aq中的“a”指“all（所有）“，“q”指“quiet（只显示容器ID）”
+docker rm $(docker ps -aq)
+</code></pre>
+<h4>卷是什么？</h4>
+<p>在计算机中通常指的是一种存储设备，它可以是硬盘、SSD、软盘等，用于存储数据和程序，简单点来说就是不以<code class="notranslate">/</code>和<code class="notranslate">./</code>开始的文件。</p>
+<pre lang="linux" class="notranslate"><code class="notranslate">#目录挂载，即目录映射
+docker -v host_directory/container_directory
+#卷映射
+docker -v host_volume/container_volume
+</code></pre>
+<p>如果要修改容器卷中的文件，可以进入主机的<code class="notranslate">/var/lib/docker/volume/volume_name</code><br>
+也可以使用以下命令直接在终端中对卷操作</p>
+<pre lang="linux" class="notranslate"><code class="notranslate">docker volume &lt;command&gt;
+#如查看相应卷的信息
+docker volume inspect volume_name
+</code></pre>
+<p>需要注意的是，当容器被删除时，主机的相应文件不会删除。</p>
+<h3>docker网络</h3>
+<h4>实现容器之间互相访问</h4>
+<p>容器之间有一个内部网络，每个容器的网关均为系统中docker0的ip，docker会为每个容器分配唯一ip，所以容器之间用对方的ip和容器端口即可访问。<br>
+但是以上方法因种种原因ip可能会改变，docker0（网络名为Bridge 桥接网络）默认不支持主机域名，可以创建自定义网络，容器名即稳定域名/ip，访问时记得加上端口号。</p>
+<pre lang="linux" class="notranslate"><code class="notranslate">#创建自定义网络
+docker network create network_name
+#启动自定义网络
+docker run --network network_name
+#查看容器详情
+docker inspect container_name
+</code></pre>
+<h2>Docker初步进阶</h2>
+<h3>Docker Compose</h3>
+<p>Docker Compose是Docker官方提供的一个工具，用于定义和运行多容器的应用程序。通过一个YAML文件来配置应用的服务，然后用一条命令来创建和管理这些容器。假设您有多个容器想要启动，做一系列事情，您目前可能就会<code class="notranslate">docker run</code>一个一个容器，相当麻烦，Docker Compose使得您成为一个将军，可以用一条命令指挥多个士兵，它解决了手动运行多个<code class="notranslate">docker run</code>命令，非常方便快捷。<br>
+要使用Docker Compose，我们首先需要编写<code class="notranslate">compose.yaml</code>文件，编写该文件需要有一定的规范，文件内容主要有以下几个顶级元素：name（名称），services（服务），networks（网络），volumes（卷），configs（配置），secrets（密匙）。<br>
+需要注意以下几点：</p>
+<ol>
+<li>若有挂载卷，则需要在volumes顶级元素中声明该卷。</li>
+<li>同一个服务中环境的变量写法可以为<code class="notranslate">"="/kv</code>，不能混着写。</li>
+<li>服务中的depends_on可以用来指定依赖容器，即可设定当指定容器启动后再启动该容器。</li>
+<li>如果有网络，也需要在顶级元素networks中声明。<br>
+Docker Compose主要有以下命令：</li>
+</ol>
+<pre lang="linux" class="notranslate"><code class="notranslate">#上线，创建并启动yaml文件，如果不指定file_name，则默认启动当前路径下名为compose.yaml的文件
+docker compose -f yaml_file_name up -d
+#下线
+docker compose down
+#使用yaml文件启动容器
+docker compose start container1 container2 container3
+#停止
+docker compose start container1 container2 container3
+#启动多个相同的容器，等于后面为容器个数
+docker compose scale container2=3
+</code></pre>
+<p>当再次使用上线命令<code class="notranslate">docker compose up</code>时，docker会自动更新yaml文件的修改。<br>
+这里补充一条较为常用的命令<code class="notranslate">docker compose -f yaml_file_name down --rmi all -v</code>，其中“-f”代表“强制”，“--rmi all”代表“删除所有容器“，“-v”代表“相关的卷”。</p>
+<h2>使用docker时遇到的问题：</h2>
 <ol>
 <li>permission denied. 当前用户无权限访问Docker 守护进程(/var/run/docker.sook)<br>
 首先，我们先检验当前用户是否已经被添加到docker组</li>

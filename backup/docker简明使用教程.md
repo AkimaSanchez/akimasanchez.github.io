@@ -85,6 +85,7 @@ docker save <customize_name>:<customize_label>
 #生成镜像
 docker load -o customize_name.tar <customize_name>:<customize_label>
 ```
+### 保存容器
 ```linux
 #登录到您的docker账号
 docker login
@@ -93,8 +94,67 @@ docker tag source_name:source_label customize_name:customize_label
 #推送您的镜像到dockerhub
 docker push
 ```
-### 保存容器
-使用docker时遇到的问题：
+### docker存储
+```linux
+#批量删除容器，其中"$"是指将括号中命令的结果传递
+#aq中的“a”指“all（所有）“，“q”指“quiet（只显示容器ID）”
+docker rm $(docker ps -aq)
+```
+#### 卷是什么？
+在计算机中通常指的是一种存储设备，它可以是硬盘、SSD、软盘等，用于存储数据和程序，简单点来说就是不以`/`和`./`开始的文件。
+```linux
+#目录挂载，即目录映射
+docker -v host_directory/container_directory
+#卷映射
+docker -v host_volume/container_volume
+```
+如果要修改容器卷中的文件，可以进入主机的`/var/lib/docker/volume/volume_name`
+也可以使用以下命令直接在终端中对卷操作
+```linux
+docker volume <command>
+#如查看相应卷的信息
+docker volume inspect volume_name
+```
+需要注意的是，当容器被删除时，主机的相应文件不会删除。
+
+### docker网络
+#### 实现容器之间互相访问
+容器之间有一个内部网络，每个容器的网关均为系统中docker0的ip，docker会为每个容器分配唯一ip，所以容器之间用对方的ip和容器端口即可访问。
+但是以上方法因种种原因ip可能会改变，docker0（网络名为Bridge 桥接网络）默认不支持主机域名，可以创建自定义网络，容器名即稳定域名/ip，访问时记得加上端口号。
+```linux
+#创建自定义网络
+docker network create network_name
+#启动自定义网络
+docker run --network network_name
+#查看容器详情
+docker inspect container_name
+```
+## Docker初步进阶
+### Docker Compose
+Docker Compose是Docker官方提供的一个工具，用于定义和运行多容器的应用程序。通过一个YAML文件来配置应用的服务，然后用一条命令来创建和管理这些容器。假设您有多个容器想要启动，做一系列事情，您目前可能就会`docker run`一个一个容器，相当麻烦，Docker Compose使得您成为一个将军，可以用一条命令指挥多个士兵，它解决了手动运行多个`docker run`命令，非常方便快捷。
+要使用Docker Compose，我们首先需要编写`compose.yaml`文件，编写该文件需要有一定的规范，文件内容主要有以下几个顶级元素：name（名称），services（服务），networks（网络），volumes（卷），configs（配置），secrets（密匙）。
+需要注意以下几点：
+1. 若有挂载卷，则需要在volumes顶级元素中声明该卷。
+2. 同一个服务中环境的变量写法可以为`"="/kv`，不能混着写。
+3. 服务中的depends_on可以用来指定依赖容器，即可设定当指定容器启动后再启动该容器。
+4. 如果有网络，也需要在顶级元素networks中声明。
+Docker Compose主要有以下命令：
+```linux
+#上线，创建并启动yaml文件，如果不指定file_name，则默认启动当前路径下名为compose.yaml的文件
+docker compose -f yaml_file_name up -d
+#下线
+docker compose down
+#使用yaml文件启动容器
+docker compose start container1 container2 container3
+#停止
+docker compose start container1 container2 container3
+#启动多个相同的容器，等于后面为容器个数
+docker compose scale container2=3
+```
+当再次使用上线命令`docker compose up`时，docker会自动更新yaml文件的修改。
+这里补充一条较为常用的命令`docker compose -f yaml_file_name down --rmi all -v`，其中“-f”代表“强制”，“--rmi all”代表“删除所有容器“，“-v”代表“相关的卷”。
+
+## 使用docker时遇到的问题：
 1. permission denied. 当前用户无权限访问Docker 守护进程(/var/run/docker.sook)
 首先，我们先检验当前用户是否已经被添加到docker组
 ```terminate
