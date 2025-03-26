@@ -153,6 +153,28 @@ docker compose scale container2=3
 ```
 当再次使用上线命令`docker compose up`时，docker会自动更新yaml文件的修改。
 这里补充一条较为常用的命令`docker compose -f yaml_file_name down --rmi all -v`，其中“-f”代表“强制”，“--rmi all”代表“删除所有容器“，“-v”代表“相关的卷”。
+### Dockerfile
+Dockerfile是一个文本文件，用于定义一个Docker镜像的构建过程。它包含了一系列的指令，这些指令告诉Docker如何准备运行环境、安装软件、设置配置等。类似于Windows的iso文件。
+我们可以从docker官网的reference中获取Dockerfile的编写方式/命令，如`FORM`指定镜像基础环境，`RUN`运行自定义命令等。
+详细可以前往[Dockerfile references](https://docs.docker.com/reference/dockerfile/)查看Dockerfile的使用方式及参数配置。
+下面举个简单的例子：
+```dockerfile
+FORM openjdk:17
+LABEL author=wiki
+COPY app.jar /app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+```
+然后运行
+```linux
+#"-f"代表文件，"-t"代表镜像名，最后的"."代表了上下文目录即当前目录
+docker build -f Dockerfile -t myjavapp:v1.0 .
+```
+我们可以从官网的[guides](https://docs.docker.com/guides/)中得知其他语言镜像的制作方式。
+### 镜像分层存储机制
+类似于git中版本控制的增量存储，但其是每一个命令分一层，同一层的东西存储到同一位置，共用存储，每个容器都有自己的读写层。容器一删除，读写层就会丢失，根据前面所学，只要挂载到本机就可以防止丢失。
+### 实例应用
+请跟着作者一步一步走，写完这些实例就大概掌握了docker的初步使用知识。
 
 ## 使用docker时遇到的问题：
 1. permission denied. 当前用户无权限访问Docker 守护进程(/var/run/docker.sook)
