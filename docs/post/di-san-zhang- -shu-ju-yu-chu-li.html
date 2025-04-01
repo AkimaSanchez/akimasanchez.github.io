@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/121594543?v=4"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="## 前言
+在前两个章节我们学习了如何从文件中读取并导入数据。">
+<meta property="og:title" content="第三章 数据预处理">
+<meta property="og:description" content="## 前言
+在前两个章节我们学习了如何从文件中读取并导入数据。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://akimasanchez.github.io/post/di-san-zhang-%20-shu-ju-yu-chu-li.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/121594543?v=4">
+<title>第三章 数据预处理</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">第三章 数据预处理</h1>
+<div class="title-right">
+    <a href="https://akimasanchez.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/AkimaSanchez/akimasanchez.github.io/issues/13" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h2>前言</h2>
+<p>在前两个章节我们学习了如何从文件中读取并导入数据。当我们导入完数据以后，面临的第一项重要的任务就是数据的预处理，包括数据基本信息查看、缺失值处理和重复值处理等。</p>
+<h2>熟悉数据</h2>
+<p>本节重点介绍如何查看数据的相关信息，对于一个数据分析师来说，进行数据分析前对数据有一定的了解可以大大提高后续工作的效率。<br>
+学习过第一章的读者可能知道在pandas库中有一个方法可以查看DataFrame的数据基本类型，也提到过一个DataFrame相当于一张Excel中的一张工作表，那位迷人的函数是谁呢？请回想一下，也可以顺便回去复习一下。是的，他就是我们人见人爱的<code class="notranslate">info</code>小姐。<br>
+这里我们可以再用第二章获得的数据来使用一次<code class="notranslate">info</code>函数，其实该函数不仅仅是对Excel表，其是对一个数据集生效的，当处理大型数据集时，该函数能帮助我们快速了解数据的基本情况，以便我们识别可能需要处理的数据问题。</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">pandas</span> <span class="pl-k">as</span> <span class="pl-s1">pd</span>
+<span class="pl-s1">df</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">read_csv</span>(<span class="pl-s">"stockA.csv"</span>)
+<span class="pl-s1">df</span>.<span class="pl-c1">info</span>()</pre></div>
+<p>然后我们可以看到以下内容：<br>
+<a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/e2858b1c909057b54a632ce59871c9be4b17b8f8c6a4be333d3853eaed8c9479/68747470733a2f2f692e706f7374696d672e63632f54316263306867462f696d6167652e706e67"><img src="https://camo.githubusercontent.com/e2858b1c909057b54a632ce59871c9be4b17b8f8c6a4be333d3853eaed8c9479/68747470733a2f2f692e706f7374696d672e63632f54316263306867462f696d6167652e706e67" alt="firstresult" data-canonical-src="https://i.postimg.cc/T1bc0hgF/image.png" style="max-width: 100%;"></a><br>
+从输出结果中我们可以看出，info方法返回了数据表的行数为11行(RangeIndex)，列数(columns)为5，同时返回了每一列数据中的非空值个数(Non-Null Count)和数据类型(dtypes)以及内存使用情况(memory usage)。<br>
+这里作者提出一个问题，如果我们想知道数据表的尺寸该使用哪个函数呢？请根据英文含义来联想，一般来说Python语言中的函数大部分是英文单词本身。<br>
+在shape方法中，我们可以用shape[0]来查看数据表的行数，shape[1]查看数据表的列数，单独的shape（不带括号）生成一个带有行数和列数的元组。例子如下所示，请自己运行一下查看结果。</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">pandas</span> <span class="pl-k">as</span> <span class="pl-s1">pd</span>
+<span class="pl-s1">df1</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">read_csv</span>(<span class="pl-s">"stockA.csv"</span>)
+<span class="pl-s1">df1</span>.<span class="pl-c1">shape</span>[<span class="pl-c1">0</span>]
+<span class="pl-s1">df1</span>.<span class="pl-c1">shape</span>[<span class="pl-c1">1</span>]
+<span class="pl-s1">df1</span>.<span class="pl-c1">shape</span></pre></div>
+<p>这里作者再考考读者，请根据第一章的知识动手做一下，请问如何使用Python生成1行3列的DataFrame类型数据df和数据组类型arr，且要求二者数值的取值范围在4~8之间，df的列名为a，b，c，最后返回df和arr的数据类型。学习过Python应该有学相应的函数吧(-^-)，而且前面也提到了Python语言中的函数大部分是英文单词本身。实在不知道就提示一下，<code class="notranslate">type</code>。</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">pandas</span> <span class="pl-k">as</span> <span class="pl-s1">pd</span>
+<span class="pl-k">import</span> <span class="pl-s1">numpy</span> <span class="pl-k">as</span> <span class="pl-s1">np</span>
+<span class="pl-s1">df</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">DataFrame</span>(<span class="pl-s1">np</span>.<span class="pl-c1">random</span>.<span class="pl-c1">randint</span>(<span class="pl-c1">4</span>,<span class="pl-c1">8</span>,<span class="pl-s1">size</span><span class="pl-c1">=</span>(<span class="pl-c1">1</span>,<span class="pl-c1">3</span>)), <span class="pl-s1">columns</span><span class="pl-c1">=</span>[<span class="pl-s">'a'</span>,<span class="pl-s">'b'</span>,<span class="pl-s">'c'</span>])
+<span class="pl-s1">arr</span><span class="pl-c1">=</span><span class="pl-s1">np</span>.<span class="pl-c1">random</span>.<span class="pl-c1">randint</span>(<span class="pl-c1">4</span>,<span class="pl-c1">8</span>,<span class="pl-s1">size</span><span class="pl-c1">=</span>(<span class="pl-c1">1</span>,<span class="pl-c1">3</span>))
+<span class="pl-en">print</span>(<span class="pl-s">'df的数据类型为：'</span>)
+<span class="pl-en">print</span>(<span class="pl-en">type</span>(<span class="pl-s1">df</span>))
+<span class="pl-en">print</span>(<span class="pl-s">'arr的数据类型为：'</span>)
+<span class="pl-en">print</span>(<span class="pl-en">type</span>(<span class="pl-s1">arr</span>))</pre></div>
+<p>可得以下输出结果：<br>
+<a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/cb628df37b2b7bb375ac9667b4052f402b9e45372286d3e77d4e0dae03c32a7b/68747470733a2f2f692e706f7374696d672e63632f3966337750314a6d2f696d6167652e706e67"><img src="https://camo.githubusercontent.com/cb628df37b2b7bb375ac9667b4052f402b9e45372286d3e77d4e0dae03c32a7b/68747470733a2f2f692e706f7374696d672e63632f3966337750314a6d2f696d6167652e706e67" alt="secondresult" data-canonical-src="https://i.postimg.cc/9f3wP1Jm/image.png" style="max-width: 100%;"></a><br>
+在上例代码的基础之上，对于series数据可以使用<code class="notranslate">.dtype</code>对其数据格式进行查看，dataframe数据可以使用<code class="notranslate">.dtypes</code>进行查看，这里我们需要仔细观察两者的区别，注意嗷，一个带有“s”，一个没有“s”。这里作者就不给出例子了（绝对不是因为懒）。<br>
+知道了基本情况，我们想要更近一步地了解数据集，做出更深层次的判断，如计数、最大值最小值和平均值等，使用<code class="notranslate">describe()</code>函数即可。</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">pandas</span> <span class="pl-k">as</span> <span class="pl-s1">pd</span>
+<span class="pl-s1">df</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">read_csv</span>(<span class="pl-s">"stockA.csv"</span>)
+<span class="pl-s1">df</span>.<span class="pl-c1">describe</span>()</pre></div>
+<p>输出结果如下：<br>
+<a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/728b239db2a0219c7d0e334be61d8532184a6e84469bb8be741dbcf5f376b222/68747470733a2f2f692e706f7374696d672e63632f317a6b7833566d592f696d6167652e706e67"><img src="https://camo.githubusercontent.com/728b239db2a0219c7d0e334be61d8532184a6e84469bb8be741dbcf5f376b222/68747470733a2f2f692e706f7374696d672e63632f317a6b7833566d592f696d6167652e706e67" alt="thirdresult" data-canonical-src="https://i.postimg.cc/1zkx3VmY/image.png" style="max-width: 100%;"></a><br>
+参数解释如下：count（计数）、mean（平均数）、std（方差）、min（最小值）、25%（四分之一分位数）、50%（二分之一分位数）、75%（四分之三分位数）、max（最大值）。</p>
+<h3>缺失值处理</h3>
+<p>在原始数据采集过程中，由于传感器或网络等问题，不可避免地会存在数据缺失的问题，数据源对于我们获取结果是最基础的一步，因此我们需要对数据进行合理的处理，才能使得结果较为准确。</p>
+<h4>缺失值检查</h4>
+<p>在Python中，缺失值一般以NaN表示，读者有时候打开Excel文件可以看到一些单元格显示NaN，那些就是缺失值。</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">pandas</span> <span class="pl-k">as</span> <span class="pl-s1">pd</span>
+<span class="pl-s1">df2</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">read_csv</span>(<span class="pl-s">"stockA.csv"</span>)
+<span class="pl-en">print</span>(<span class="pl-s1">df2</span>.<span class="pl-c1">isnull</span>())</pre></div>
+<p>然后我们可以看到以下结果（这里因为我删除了一个数据作例子，读者显示的应该全是“False”的），当为空时显示为“True”，否则为“False”，其显示清晰明了地让我们知道有哪些数据是空的，非常方便。<br>
+<a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/e559c54bfe55945bbcb06d4eaf1ec1ca5c8050a3fd5801d1850bacd0c4f8c961/68747470733a2f2f692e706f7374696d672e63632f484c6363677a534e2f323032352d30332d32382d3132313134312e706e67"><img src="https://camo.githubusercontent.com/e559c54bfe55945bbcb06d4eaf1ec1ca5c8050a3fd5801d1850bacd0c4f8c961/68747470733a2f2f692e706f7374696d672e63632f484c6363677a534e2f323032352d30332d32382d3132313134312e706e67" alt="forthresult" data-canonical-src="https://i.postimg.cc/HLccgzSN/2025-03-28-121141.png" style="max-width: 100%;"></a><br>
+我们还可以结合sum()函数得知缺失值的数量<code class="notranslate">print(df2.isnull().sum())</code>。</p>
+<h4>缺失值删除</h4>
+<p>当缺失数据较多且重要程度不高时，我们可以直接使用<code class="notranslate">dropna()</code>方法删除这些没有价值的数据。</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">pandas</span> <span class="pl-k">as</span> <span class="pl-s1">pd</span>
+<span class="pl-s1">df</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">DataFrame</span>({<span class="pl-s">'column1'</span>:[<span class="pl-c1">None</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>,<span class="pl-c1">4</span>,<span class="pl-c1">None</span>],<span class="pl-s">'column2'</span>:[<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>,<span class="pl-c1">None</span>,<span class="pl-c1">None</span>],<span class="pl-s">'colum3'</span>:[<span class="pl-c1">None</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>,<span class="pl-c1">4</span>,<span class="pl-c1">5</span>],<span class="pl-s">'column4'</span>:[<span class="pl-c1">None</span>,<span class="pl-c1">None</span>,<span class="pl-c1">None</span>,<span class="pl-c1">None</span>,<span class="pl-c1">None</span>],<span class="pl-s">'column5'</span>:[<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>,<span class="pl-c1">4</span>,<span class="pl-c1">5</span>]})
+<span class="pl-s1">df</span>.<span class="pl-c1">dropna</span>()</pre></div>
+<p>运行后我们可以发现所有带有<code class="notranslate">None</code>的<strong>行或列</strong>都被删除了，实际情况我们大多数时候是要保留不为空的单元格的，只有当整行为空时才删除比较符合大多数需求。为实现这一需求，我们可以设置<code class="notranslate">dropna()</code>的参数<code class="notranslate">how</code>为<code class="notranslate">all</code>，同时可以设置<code class="notranslate">axis</code>参数来指定行或列。</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c">#续上</span>
+<span class="pl-c">#当整行为空时，删除整行</span>
+<span class="pl-s1">df</span>.<span class="pl-c1">dropna</span>(<span class="pl-s1">how</span><span class="pl-c1">=</span><span class="pl-s">'all'</span>, <span class="pl-s1">axis</span><span class="pl-c1">=</span><span class="pl-c1">0</span>)
+<span class="pl-c">#当整列为空时，删除整列</span>
+<span class="pl-s1">df</span>.<span class="pl-c1">dropna</span>(<span class="pl-s1">how</span><span class="pl-c1">=</span><span class="pl-s">'all'</span>, <span class="pl-s1">axis</span><span class="pl-c1">=</span><span class="pl-c1">1</span>)</pre></div>
+<p>而设置<code class="notranslate">how='any'</code>与<code class="notranslate">axis</code>参数的值可以指定当<strong>行或列</strong>中有一个为空时删除该<strong>行或列</strong>。</p>
+<h4>缺失值替换/填充</h4>
+<p>除了可以对数据中的缺失值进行删除以外，还可以进行替换和填充操作，有均值填补法、近邻填补法、插值填补法等。这里我们继续用缺失值删除小节的df作为例子。<br>
+首先，我们可以利用各列值的均值作为参数填充入空值中，即<code class="notranslate">df.fillna(df.mean())</code>，其次是近邻填补法，利用缺失值后面的数据进行填充：<code class="notranslate">df.fillna(method='bfill')</code>，利用缺失值前面的数据进行填充：<code class="notranslate">df.fillna(method='ffill')</code>，这两种是表常用的方法，请读者动手尝试一下。<br>
+常用方法举例补充：利用二次多项式插值法或三次样条插值法对column4列进行填充</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-c">#使用order指定多项式幂次数，method指定方法，interpolate方法读者可自行查找</span>
+<span class="pl-s1">df</span>[<span class="pl-s">'column4'</span>].<span class="pl-c1">interpolate</span>(<span class="pl-s1">method</span><span class="pl-c1">=</span><span class="pl-s">"polynomial"</span>,<span class="pl-s1">order</span><span class="pl-c1">=</span><span class="pl-c1">2</span>)
+<span class="pl-c">#利用一个三次多项式逼近原目标函数，然后求解该三次多项式的极小点来作为原目标函数的极近似小点</span>
+<span class="pl-s1">df</span>[<span class="pl-s">'column4'</span>].<span class="pl-c1">interpolate</span>(<span class="pl-s1">method</span><span class="pl-c1">=</span><span class="pl-s">"spline"</span>,<span class="pl-s1">order</span><span class="pl-c1">=</span><span class="pl-c1">3</span>)</pre></div>
+<h3>重复值处理</h3>
+<p>在数据采集过程中，有时会存在对同一个数据进行多次采集的情况，重复值的存在有可能导致数据集的各项数据偏离其所表达的信息，如平均值可能会偏大偏小等问题，因此对重复数据进行处理是十分必要的。<br>
+初步入门的话我们一般用到两个函数：<code class="notranslate">duplicated()</code>和<code class="notranslate">drop_duplicates()</code>。<br>
+'duplicated()'默认判断全部列中是否全部重复并返回布尔类型值。完全没有重复的行，返回值为False，有重复的行，第一次出现重复的那一行返回False，其余返回True。<br>
+'drop_duplicates()'默认判断全部列，删除冗余的所有行。<br>
+这里给到一个例子给读者去尝试一下:</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">pandas</span> <span class="pl-k">as</span> <span class="pl-s1">pd</span>
+<span class="pl-s1">df</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">DataFrame</span>({<span class="pl-s">'column1'</span>:[<span class="pl-c1">None</span>,<span class="pl-c1">1</span>,<span class="pl-c1">3</span>,<span class="pl-c1">4</span>,<span class="pl-c1">None</span>],<span class="pl-s">'column2'</span>:[<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>,<span class="pl-c1">None</span>,<span class="pl-c1">None</span>],<span class="pl-s">'colum3'</span>:[<span class="pl-c1">None</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>,<span class="pl-c1">4</span>,<span class="pl-c1">5</span>],<span class="pl-s">'column4'</span>:[<span class="pl-c1">None</span>,<span class="pl-c1">None</span>,<span class="pl-c1">None</span>,<span class="pl-c1">None</span>,<span class="pl-c1">None</span>],<span class="pl-s">'column5'</span>:[<span class="pl-c1">1</span>,<span class="pl-c1">2</span>,<span class="pl-c1">3</span>,<span class="pl-c1">4</span>,<span class="pl-c1">5</span>],<span class="pl-s">'column6'</span>:[<span class="pl-c1">None</span>,<span class="pl-c1">1</span>,<span class="pl-c1">3</span>,<span class="pl-c1">4</span>,<span class="pl-c1">None</span>]})</pre></div>
+<h3>异常值的检测与处理</h3>
+<p>异常值这个概念实在是太抽象了，每一个值都可以是异常值，根据需求的不同异常值也不同。在数据分析中，异常值是指超出或低于正常范围的值，比如说年龄1000岁，体重为-100kg，人的身高50米等。本节将介绍如何处理这样的异常值数据。</p>
+<h4>检测异常值</h4>
+<p>异常值的检测主要有两种方法，判断数据范围(query方法)和箱型图(boxplot方法)。<br>
+本节使用以下例子，没有明说则默认为该例子。</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">pandas</span> <span class="pl-k">as</span> <span class="pl-s1">pd</span>
+<span class="pl-s1">df</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">DataFrame</span>({<span class="pl-s">'名字'</span>:[<span class="pl-s">"小明"</span>,<span class="pl-s">"小红"</span>,<span class="pl-s">"小天"</span>,<span class="pl-s">"小刚"</span>,<span class="pl-s">"小芳"</span>,<span class="pl-s">"小美"</span>],<span class="pl-s">'年龄'</span>:[<span class="pl-c1">20</span>,<span class="pl-c1">30</span>,<span class="pl-c1">24</span>,<span class="pl-c1">-</span><span class="pl-c1">2</span>,<span class="pl-c1">43</span>,<span class="pl-c1">23</span>]})
+<span class="pl-s1">df</span></pre></div>
+<p>在本例子中，首先使用pandas库中的query方法查询数据中是否有异常值，然后通过boxplot方法检测异常值。</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">pandas</span> <span class="pl-k">as</span> <span class="pl-s1">pd</span>
+<span class="pl-k">import</span> <span class="pl-s1">matplotlib</span>.<span class="pl-s1">pyplot</span> <span class="pl-k">as</span> <span class="pl-s1">plt</span>
+<span class="pl-c">#使用query查询数据中是否有异常值</span>
+<span class="pl-en">print</span>(<span class="pl-s1">df</span>.<span class="pl-c1">query</span>(<span class="pl-s">"年龄&lt;1"</span>))
+<span class="pl-c">#使用boxplot方法检测</span>
+<span class="pl-s1">plt</span>.<span class="pl-c1">boxplot</span>(<span class="pl-s1">df</span>[<span class="pl-s">'年龄'</span>])</pre></div>
+<p>结果如图所示<br>
+<a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/e7c6bc67bb71126e492ed8b7b78e83790f044d67f74a417c37d57118a23a1446/68747470733a2f2f692e706f7374696d672e63632f664c6b42583763392f696d6167652e706e67"><img src="https://camo.githubusercontent.com/e7c6bc67bb71126e492ed8b7b78e83790f044d67f74a417c37d57118a23a1446/68747470733a2f2f692e706f7374696d672e63632f664c6b42583763392f696d6167652e706e67" alt="fivethresult" data-canonical-src="https://i.postimg.cc/fLkBX7c9/image.png" style="max-width: 100%;"></a><br>
+我们可以看到，数据中索引为3的值为异常值，箱型图中有两个偏离的比较远的点，如果学习过统计学概论可能会知道，这两个点很有可能就是异常值，因为其偏离平均值实在是太远了，但是从实际角度来说，只有小于0的那个数据是异常值。</p>
+<h4>处理异常值</h4>
+<p>在数据分析过程中对异常值的处理通常包括三种常见的方法：一是直接删除它，最为简单粗暴的方法；二是当成缺失值处理，用某个值进行填充；三是当成特殊情况进行分析，研究其出现的原因。<br>
+第二种方法在上述有所展示，这里不再赘述，同时第三种方法是要分析者去研究，不太好用代码展示，因此，这里仅展示删除异常值，使用<code class="notranslate">drop()</code>方法实现，代码及结果如下：</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-en">print</span>(<span class="pl-s">"查看有无异常值:"</span>)
+<span class="pl-en">print</span>(<span class="pl-s1">df</span>.<span class="pl-c1">query</span>(<span class="pl-s">"年龄&lt;1"</span>))
+<span class="pl-en">print</span>(<span class="pl-s">"<span class="pl-cce">\n</span>删除异常值:"</span>)
+<span class="pl-c">#index参数指定索引，axis参数“0”指定行，“1”指定列</span>
+<span class="pl-s1">df1</span><span class="pl-c1">=</span><span class="pl-s1">df</span>.<span class="pl-c1">drop</span>(<span class="pl-s1">index</span><span class="pl-c1">=</span><span class="pl-c1">3</span>,<span class="pl-s1">axis</span><span class="pl-c1">=</span><span class="pl-c1">0</span>)
+<span class="pl-en">print</span>(<span class="pl-s1">df1</span>)</pre></div>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/fdafeea205dcb768080e5d9b5bfdfb9e582f38f0f41d2cf9742b0a96a0382282/68747470733a2f2f692e706f7374696d672e63632f3433767a664a53532f696d6167652e706e67"><img src="https://camo.githubusercontent.com/fdafeea205dcb768080e5d9b5bfdfb9e582f38f0f41d2cf9742b0a96a0382282/68747470733a2f2f692e706f7374696d672e63632f3433767a664a53532f696d6167652e706e67" alt="sixthresult" data-canonical-src="https://i.postimg.cc/43vzfJSS/image.png" style="max-width: 100%;"></a></p>
+<h3>数据类型转换</h3>
+<p>不知读者在学习Python有没有学过，如果有也别跳过本节，因为本节使用的属性或函数是NumPy/Pandas特有的。本节介绍数据类型的检查及转换方法，主要使用<code class="notranslate">dtype</code>属性和<code class="notranslate">astype</code>函数。</p>
+<h4>数据类型检查</h4>
+<p>首先使用arange方法创建数组arr，然后通过打印arr数据的<code class="notranslate">dtype</code>属性查看数据的数据类型，代码及运行结果如下：</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">numpy</span> <span class="pl-k">as</span> <span class="pl-s1">np</span>
+<span class="pl-s1">arr1</span><span class="pl-c1">=</span><span class="pl-s1">np</span>.<span class="pl-c1">arange</span>(<span class="pl-c1">1</span>,<span class="pl-c1">10</span>,<span class="pl-c1">2</span>)
+<span class="pl-en">print</span>(<span class="pl-s">"arr1数组："</span>,<span class="pl-s1">arr1</span>)
+<span class="pl-en">print</span>(<span class="pl-s">"arr1的数据类型为："</span>,<span class="pl-s1">arr1</span>.<span class="pl-c1">dtype</span>)
+<span class="pl-s1">arr2</span><span class="pl-c1">=</span><span class="pl-s1">np</span>.<span class="pl-c1">arange</span>(<span class="pl-c1">0</span>,<span class="pl-c1">1</span>,<span class="pl-c1">0.2</span>)
+<span class="pl-en">print</span>(<span class="pl-s">"arr2数据："</span>,<span class="pl-s1">arr2</span>)
+<span class="pl-en">print</span>(<span class="pl-s">"arr2的数据类型为："</span>,<span class="pl-s1">arr2</span>.<span class="pl-c1">dtype</span>)</pre></div>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/1bc2314d21b18663a772c37c747856258edaba19dfb969759316464392de86fa/68747470733a2f2f692e706f7374696d672e63632f485736465748476e2f696d6167652e706e67"><img src="https://camo.githubusercontent.com/1bc2314d21b18663a772c37c747856258edaba19dfb969759316464392de86fa/68747470733a2f2f692e706f7374696d672e63632f485736465748476e2f696d6167652e706e67" alt="seventhresult" data-canonical-src="https://i.postimg.cc/HW6FWHGn/image.png" style="max-width: 100%;"></a></p>
+<h4>数据类型转换</h4>
+<p>首先使用arange方法创建一维浮点数组arr1，然后将arr1数据的数据类型转换为64位整型。代码及运行结果如下：</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">numpy</span> <span class="pl-k">as</span> <span class="pl-s1">np</span>
+<span class="pl-s1">arr</span><span class="pl-c1">=</span><span class="pl-s1">np</span>.<span class="pl-c1">arange</span>(<span class="pl-c1">1</span>,<span class="pl-c1">3</span>,<span class="pl-c1">0.5</span>)
+<span class="pl-en">print</span>(<span class="pl-s">"arr数组为："</span>,<span class="pl-s1">arr</span>,<span class="pl-s">"arr的数据类型为："</span>,<span class="pl-s1">arr</span>.<span class="pl-c1">dtype</span>)
+<span class="pl-c">#将arr中的数据强制转换为整型</span>
+<span class="pl-s1">arr1</span><span class="pl-c1">=</span><span class="pl-s1">arr</span>.<span class="pl-c1">astype</span>(<span class="pl-s1">np</span>.<span class="pl-c1">int64</span>)
+<span class="pl-en">print</span>(<span class="pl-s">"arr转换以后为："</span>,<span class="pl-s1">arr1</span>,<span class="pl-s">"arr的数据类型为："</span>,<span class="pl-s1">arr1</span>.<span class="pl-c1">dtype</span>)</pre></div>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/2aed82cb855abe0f7d8bfc29206e85b7fde6d393cdb56c5d7c7b7a505b09242c/68747470733a2f2f692e706f7374696d672e63632f354e7737594d54382f696d6167652e706e67"><img src="https://camo.githubusercontent.com/2aed82cb855abe0f7d8bfc29206e85b7fde6d393cdb56c5d7c7b7a505b09242c/68747470733a2f2f692e706f7374696d672e63632f354e7737594d54382f696d6167652e706e67" alt="eighthresult" data-canonical-src="https://i.postimg.cc/5Nw7YMT8/image.png" style="max-width: 100%;"></a></p>
+<h3>索引设置</h3>
+<p>索引用于加速数据检索，其作用相当于图书目录，我们可以根据目录中的页码快速找到对应的内容。这里额外提一嘴，就当作者自言自语，这些主要是数据库的内容，索引虽然可以提高查询速度，但是会降低删除和增加内容的速度，为什么呢，因为索引可以避免全表扫描，可以将O(n)的查询复杂度降低到O(logn)，但是其在修改操作时会写入放大，假设一个表中有N个索引，那每次数据修改实际上需要执行N+1次写入（数据+所有索引）。</p>
+<h4>索引的设置、更改、重命名</h4>
+<p>我们可以通过设置Series方法中的参数index来设置索引，假如我们认为数据集中的索引不符合我们的需求，同时数据集中的一列符合我们的需求，可以使用<code class="notranslate">set_index()</code>函数来指定某一字段为索引，代码及结果如下：</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">pandas</span> <span class="pl-k">as</span> <span class="pl-s1">pd</span>
+<span class="pl-s1">data</span><span class="pl-c1">=</span>[[<span class="pl-c1">1</span>,<span class="pl-s">'a'</span>,<span class="pl-c1">False</span>],[<span class="pl-c1">2</span>,<span class="pl-s">'b'</span>,<span class="pl-c1">True</span>],[<span class="pl-c1">3</span>,<span class="pl-s">'c'</span>,<span class="pl-c1">False</span>]]
+<span class="pl-s1">columns</span><span class="pl-c1">=</span>[<span class="pl-s">'A'</span>,<span class="pl-s">'B'</span>,<span class="pl-s">'C'</span>]
+<span class="pl-s1">index</span><span class="pl-c1">=</span>[<span class="pl-s">'X'</span>,<span class="pl-s">'Y'</span>,<span class="pl-s">'Z'</span>]
+<span class="pl-s1">df</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">DataFrame</span>(<span class="pl-s1">data</span><span class="pl-c1">=</span><span class="pl-s1">data</span>,<span class="pl-s1">columns</span><span class="pl-c1">=</span><span class="pl-s1">columns</span>)
+<span class="pl-en">print</span>(<span class="pl-s">"未设置索引前的表：<span class="pl-cce">\n</span>"</span>,<span class="pl-s1">df</span>)
+<span class="pl-c">#设置索引</span>
+<span class="pl-s1">df1</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">DataFrame</span>(<span class="pl-s1">data</span><span class="pl-c1">=</span><span class="pl-s1">data</span>,<span class="pl-s1">columns</span><span class="pl-c1">=</span><span class="pl-s1">columns</span>,<span class="pl-s1">index</span><span class="pl-c1">=</span><span class="pl-s1">index</span>)
+<span class="pl-en">print</span>(<span class="pl-s">"<span class="pl-cce">\n</span>设置索引后的表：<span class="pl-cce">\n</span>"</span>,<span class="pl-s1">df1</span>)
+<span class="pl-c">#更改索引</span>
+<span class="pl-s1">df2</span><span class="pl-c1">=</span><span class="pl-s1">df</span>.<span class="pl-c1">set_index</span>(<span class="pl-s">'A'</span>)
+<span class="pl-en">print</span>(<span class="pl-s">"<span class="pl-cce">\n</span>更改索引后的表<span class="pl-cce">\n</span>"</span>,<span class="pl-s1">df2</span>)</pre></div>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/932b261f083fb9683d00159ea676e9b049885814e7b2b1d0ee6cdae0379e2c31/68747470733a2f2f692e706f7374696d672e63632f57337a30364751502f696d6167652e706e67"><img src="https://camo.githubusercontent.com/932b261f083fb9683d00159ea676e9b049885814e7b2b1d0ee6cdae0379e2c31/68747470733a2f2f692e706f7374696d672e63632f57337a30364751502f696d6167652e706e67" alt="ninthresult" data-canonical-src="https://i.postimg.cc/W3z06GQP/image.png" style="max-width: 100%;"></a></p>
+<h4>重命名索引</h4>
+<p>在设置索引过程中，除了可以将数据中某一列设置为索引外，还可以对索引重命名，本节介绍对索引重命名的方法，函数<code class="notranslate">reindex()</code>。这里作者引用书中的例子进行说明。代码及结果如下：</p>
+<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">pandas</span> <span class="pl-k">as</span> <span class="pl-s1">pd</span>
+<span class="pl-s1">data</span><span class="pl-c1">=</span>[[<span class="pl-c1">123</span>,<span class="pl-c1">113</span>,<span class="pl-c1">109</span>],[<span class="pl-c1">45</span>,<span class="pl-c1">23</span>,<span class="pl-c1">90</span>],[<span class="pl-c1">138</span>,<span class="pl-c1">128</span>,<span class="pl-c1">98</span>]]
+<span class="pl-s1">index</span><span class="pl-c1">=</span>[<span class="pl-s">'stu1'</span>,<span class="pl-s">'stu2'</span>,<span class="pl-s">'stu5'</span>]
+<span class="pl-s1">columns</span><span class="pl-c1">=</span>[<span class="pl-s">'语文'</span>,<span class="pl-s">'英语'</span>,<span class="pl-s">'数学'</span>]
+<span class="pl-s1">df</span><span class="pl-c1">=</span><span class="pl-s1">pd</span>.<span class="pl-c1">DataFrame</span>(<span class="pl-s1">data</span><span class="pl-c1">=</span><span class="pl-s1">data</span>,<span class="pl-s1">columns</span><span class="pl-c1">=</span><span class="pl-s1">columns</span>,<span class="pl-s1">index</span><span class="pl-c1">=</span><span class="pl-s1">index</span>)
+<span class="pl-en">print</span>(<span class="pl-s">"原表为：<span class="pl-cce">\n</span>"</span>,<span class="pl-s1">df</span>)
+<span class="pl-s1">df1</span><span class="pl-c1">=</span><span class="pl-s1">df</span>.<span class="pl-c1">reindex</span>(<span class="pl-s1">index</span><span class="pl-c1">=</span>[<span class="pl-s">'stu1'</span>,<span class="pl-s">'stu2'</span>,<span class="pl-s">'stu3'</span>,<span class="pl-s">'stu4'</span>,<span class="pl-s">'stu5'</span>],<span class="pl-s1">columns</span><span class="pl-c1">=</span>[<span class="pl-s">'语文'</span>,<span class="pl-s">'物理'</span>,<span class="pl-s">'数学'</span>,<span class="pl-s">'英语'</span>])
+<span class="pl-en">print</span>(<span class="pl-s">"<span class="pl-cce">\n</span>重命名索引后的表为：<span class="pl-cce">\n</span>"</span>,<span class="pl-s1">df1</span>)</pre></div>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/d761e4a3a2446e611b8bb486539e3819843c457f4018365cce971aa9abea06ad/68747470733a2f2f692e706f7374696d672e63632f7a4467334b32566b2f696d6167652e706e67"><img src="https://camo.githubusercontent.com/d761e4a3a2446e611b8bb486539e3819843c457f4018365cce971aa9abea06ad/68747470733a2f2f692e706f7374696d672e63632f7a4467334b32566b2f696d6167652e706e67" alt="tenthresult" data-canonical-src="https://i.postimg.cc/zDg3K2Vk/image.png" style="max-width: 100%;"></a></p>
+<h3>其他常用预处理方法</h3>
+<h4>大小写转换</h4>
+<p>读者在学习Python后应该立刻反应过来了，使用<code class="notranslate">lower()</code>方法和<code class="notranslate">upper()</code>方法，是的，完全正确！所以这里只给出几个需要注意的点：</p>
+<ol>
+<li>这两个方法不会修改原始字符串，而是返回一个新的字符串，这是因为字符串在Python中是不可变的。</li>
+<li>在Pandas中，如果需要对DataFrame或Series中的字符串进行大小写转换，可以使用<code class="notranslate">.str.upper()</code>或<code class="notranslate">.str.lower()</code>方法。</li>
+<li>如果需要进行频繁的大小写转换，可以考虑使用如正则表达式（这里开个坑，以后详写）的方法来优化性能。</li>
+</ol>
+<h4>数据的修改、替换和删除</h4>
+<p>第一章我们提到过对表数据的操作，但是不够详细，现在我们来详细讲解一下。</p>
+<h2>结语</h2>
+<p>希望通过本章学习，读者能够掌握查看数据基本信息的方法，对数据中缺失值与重复值的处理方法等内容。</p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://akimasanchez.github.io">AS的博客</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行"+diffDay+"天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","AkimaSanchez/akimasanchez.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>
